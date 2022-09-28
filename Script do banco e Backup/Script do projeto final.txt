@@ -1,0 +1,173 @@
+CREATE DATABASE lojinha
+CHARSET = utf8 COLLATE = utf8_general_ci;
+USE lojinha;
+
+CREATE TABLE genero 
+(
+cod_genero INT(2) AUTO_INCREMENT PRIMARY KEY,
+data_cadastro DATETIME NOT NULL,
+nome VARCHAR(25) UNIQUE NOT NULL,
+status BIT NOT NULL
+);
+INSERT INTO genero VALUES (0,now(),'',1);
+CREATE TABLE categoria 
+(
+cod_categoria INT(2) AUTO_INCREMENT PRIMARY KEY,
+data_cadastro DATETIME NOT NULL,
+nome VARCHAR(25) UNIQUE NOT NULL,
+status BIT NOT NULL
+);
+INSERT INTO categoria VALUES (0,now(),'Jogo',1);
+CREATE TABLE plataforma 
+(
+cod_plataforma INT(2) AUTO_INCREMENT PRIMARY KEY,
+data_cadastro DATETIME NOT NULL,
+nome VARCHAR(25) UNIQUE NOT NULL,
+status BIT NOT NULL
+);
+INSERT INTO plataforma VALUES (0,now(),'',1);
+CREATE TABLE marca 
+(
+cod_marca INT(3) AUTO_INCREMENT PRIMARY KEY,
+data_cadastro DATETIME NOT NULL,
+nome VARCHAR(30) UNIQUE NOT NULL,
+status BIT NOT NULL
+);
+INSERT INTO marca VALUES (0,now(),'',1);
+CREATE TABLE cliente 
+(
+cod_cliente INT(6) AUTO_INCREMENT PRIMARY KEY,
+nome VARCHAR(60) NOT NULL,
+nome_social VARCHAR(80),
+cpf CHAR(14) UNIQUE NOT NULL,
+data_nascimento DATE NOT NULL,
+celular CHAR(15),
+telefone CHAR(14),
+data_cadastro DATETIME NOT NULL,
+status BIT NOT NULL,
+email VARCHAR(90),
+cep CHAR(9) NOT NULL,
+cidade VARCHAR(60),
+rua VARCHAR(50),
+numero VARCHAR(3),
+complemento VARCHAR(70),
+estado CHAR(2),
+bairro VARCHAR(50)
+);
+
+CREATE TABLE cargo
+(
+cod_cargo INT(2) AUTO_INCREMENT PRIMARY KEY,
+data_cadastro DATETIME,
+nome VARCHAR(30) UNIQUE NOT NULL,
+status BIT NOT NULL
+);
+
+CREATE TABLE funcionario 
+(
+cod_funcionario INT(2) AUTO_INCREMENT PRIMARY KEY,
+nome VARCHAR(60) NOT NULL,
+nome_social VARCHAR(80),
+cpf CHAR(14) UNIQUE NOT NULL,
+data_nascimento DATE NOT NULL,
+celular CHAR(15),
+telefone CHAR(14),
+data_cadastro DATETIME NOT NULL,
+status BIT NOT NULL,
+email VARCHAR(90),
+login VARCHAR(50) NOT NULL,
+senha VARCHAR(50) NOT NULL,
+tipo_acesso VARCHAR(50) NOT NULL,
+cep CHAR(9),
+cidade VARCHAR(60),
+rua VARCHAR(50),
+numero VARCHAR(03),
+complemento VARCHAR(70),
+estado CHAR(2),
+bairro VARCHAR(50),
+cod_cargo INT(2),
+FOREIGN KEY(cod_cargo) REFERENCES cargo (cod_cargo)
+);
+
+CREATE TABLE locacao 
+(
+cod_locacao INT(6) AUTO_INCREMENT PRIMARY KEY,
+data_retirada DATE,
+data_devolucao INT(2),
+dinheiro DECIMAL(9,2),
+pix DECIMAL(9,2),
+cartao_credito DECIMAL(9,2),
+cartao_debito DECIMAL(9,2),
+valor_total DECIMAL(8,2),
+cod_cliente INT(6),
+cod_funcionario INT(2),
+FOREIGN KEY(cod_cliente) REFERENCES cliente (cod_cliente),
+FOREIGN KEY(cod_funcionario) REFERENCES funcionario (cod_funcionario)
+);
+
+CREATE TABLE venda 
+(
+cod_venda INT(7) AUTO_INCREMENT PRIMARY KEY,
+data_venda DATE,
+total_venda DECIMAL(8,2) NOT NULL,
+desconto DECIMAL(4,2),
+dinheiro DECIMAL(9,2),
+pix DECIMAL(9,2),
+cartao_credito DECIMAL(9,2),
+cartao_debito DECIMAL(9,2),
+cod_funcionario INT(2),
+cod_cliente INT(6),
+FOREIGN KEY(cod_funcionario) REFERENCES funcionario (cod_funcionario),
+FOREIGN KEY(cod_cliente) REFERENCES cliente (cod_cliente)
+);
+
+CREATE TABLE produto 
+(
+cod_produto INT(5) AUTO_INCREMENT PRIMARY KEY,
+nome TEXT(300),
+preco_diaria DECIMAL(4,2),
+especificacoes TEXT(1000),
+sinopse TEXT(500),
+status BIT NOT NULL,
+quantidade INT(5),
+faixa_etaria CHAR(3),
+preco_custo DECIMAL(6,2),
+observacao VARCHAR(100),
+preco_venda DECIMAL(6,2),
+data_lancamento DATE,
+data_cadastro DATETIME,
+desenvolvedor VARCHAR(50),
+tipo VARCHAR(15),
+lucro DECIMAL(6,2),
+alugado BIT,
+cod_genero INT(2),
+cod_plataforma INT(2),
+cod_marca INT(3),
+cod_categoria INT(2),
+FOREIGN KEY(cod_genero) REFERENCES genero (cod_genero),
+FOREIGN KEY(cod_plataforma) REFERENCES plataforma (cod_plataforma),
+FOREIGN KEY(cod_marca) REFERENCES marca (cod_marca),
+FOREIGN KEY(cod_categoria) REFERENCES categoria (cod_categoria)
+);
+
+CREATE TABLE venda_produto 
+(
+cod_venda_produto INT(11) AUTO_INCREMENT PRIMARY KEY,
+cod_venda INT(7),
+cod_produto INT(5),
+preco DECIMAL(8,2) NOT NULL,
+quantidade INT(3) NOT NULL,
+FOREIGN KEY(cod_venda) REFERENCES venda (cod_venda),
+FOREIGN KEY(cod_produto) REFERENCES produto (cod_produto)
+);
+
+CREATE TABLE locacao_produto 
+(
+cod_locacao_produto INT(11) AUTO_INCREMENT PRIMARY KEY,
+cod_locacao INT(6),
+cod_produto INT(5),
+preco DECIMAL(8,2) NOT NULL,
+quantidade INT(3) NOT NULL,
+FOREIGN KEY(cod_locacao) REFERENCES locacao (cod_locacao),
+FOREIGN KEY(cod_produto) REFERENCES produto (cod_produto)
+);
